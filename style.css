@@ -1,0 +1,139 @@
+ body {
+ 	padding: 0; 
+ 	margin: 0;
+ 	background: black;
+ 	font-family: 'Alegreya', serif;
+ 	font-size: 1.9em;
+ 	letter-spacing: .2em;
+ 	overflow: hidden;
+ } 
+
+ canvas {
+ 	vertical-align: top;
+    -webkit-clip-path: circle(34% at center);
+} 
+
+ #bubble {
+ 	width: 100%;
+ 	height: 100%;
+ 	margin: 0;
+
+    -webkit-clip-path: circle(34% at center);
+    clip-path: circle(34% at center);
+ }
+
+/* .circle-mask {
+  clip-path: circle(34% at center);
+  position: absolute;
+  top: 0;
+  z-index: -1;
+}*/
+
+.blurred {
+  height: 100%;
+  width: 100%;
+}
+
+h2 {
+	color: black;
+	line-height: 1px;
+}
+
+.text {
+	position: absolute;
+	top: 60%;
+	transform: scale(.7);
+	opacity: 0;	
+	left: 50%;
+	filter: blur(10px);
+/*		transition: 1s;
+	transition-timing-function: ease;*/
+	/*padding-top: 40%;*/
+}
+
+.text.active {
+/*	opacity: 1;	
+	transform: scale(1);
+	filter: blur(0px);*/
+/*	transition: 1s;
+	transition-timing-function: ease;*/
+	transform-origin: 50% 50%;
+
+	animation: textmove 5s ease-in-out;
+
+}
+
+@keyframes textmove {
+    0% {
+    	left: 60%;
+    	top: 30%;
+		transform: scale(.5) rotate(-90deg); 	
+    	opacity: 0;	 
+    	filter: blur(10px);
+
+    }
+
+    35% {
+    	left: 50%;
+    	top: 60%;
+		transform: scale(1) rotate(0deg); 	
+    	opacity: 1; 
+    	filter: blur(0);
+    }
+
+    65% {
+    	left: 50%;
+    	top: 60%;
+		transform: scale(1) rotate(0deg); 	
+    	opacity: 1; 
+    	filter: blur(0);
+    }
+
+    100% {
+    	left: 40%;
+    	top: 30%;
+		transform: scale(.5) rotate(90deg); 	
+    	opacity: 0;	
+    	filter: blur(10px)
+    }
+}
+
+.sign {
+	line-height: 1px;
+	position: absolute;
+	color: black;
+	top: 60%;
+	left: 50%;
+
+	transform: scale(.7);
+	opacity: 0;	
+	filter: blur(10px);
+	transition: 1s;
+	transition-timing-function: ease;
+}
+
+
+.sign.active {
+	opacity: 1;	
+	transform: scale(1);
+	filter: blur(0px);
+	transition: 1s;
+	transition-timing-function: ease;
+		/*animation: showSign 2s ease-in-out;*/
+} 
+
+.sign.active.gone {
+	opacity: 0;	
+	transform: scale(1.3);
+	filter: blur(10px);
+	transition: 1s;
+	transition-timing-function: ease;
+		/*animation: showSign 2s ease-in-out;*/
+} 
+
+/*@keyframes showSign {
+    0%   {	transform: scale(.7); 	opacity: 0;	 filter: blur(10px);}
+        30%   {transform: scale(1);opacity: 1; filter: blur(0);	}
+        70%   {transform: scale(1);opacity: 1; filter: blur(0);	}
+    100%   {	transform: scale(1.3); 	opacity: 0;	filter: blur(10px)}
+}*/
