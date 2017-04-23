@@ -33,6 +33,7 @@ var opa, opa2;
 var changeBCTimer = 40;
 var textbg;
 var notSureIfDown;
+var bufferTiming = 500;
 
 function preload() {
   font = loadFont("lib/Sue Ellen Francisco.ttf");
@@ -142,7 +143,7 @@ function draw() {
   //if(keyIsDown(32)) {
   //  samePerson = new Date();
  // }
-   if (!keyIsDown(32) && new Date() - samePerson > 1000 && notSureIfDown == true) {
+   if (!keyIsDown(32) && new Date() - samePerson > bufferTiming && notSureIfDown == true) {
     keyReleased();
    }
    if (keyIsDown(32)) {
@@ -272,7 +273,7 @@ function draw() {
 
 
     isHandOn = false;
-    if ((new Date() - samePerson)/1000 < 3 && suppressor >= 1) {
+    if ((new Date() - samePerson)/1000 < 4 && suppressor >= 1) {
     } else {
        reset();
     }
@@ -319,7 +320,7 @@ function suppress(){
 }
 
 function keyReleased(){
-  if ((new Date() - samePerson) > 1000) {
+  if ((new Date() - samePerson) > bufferTiming) {
     console.log("here");
      vid = vidStill;
      vidMove.stop();
@@ -339,7 +340,7 @@ function keyPressed(){
     clearInterval(interval);
     timePressed = new Date();
   }
-  if (new Date() - samePerson > 1000){
+  if (new Date() - samePerson > bufferTiming){
     notSureIfDown = false;
        // samePerson = new Date();
   }
