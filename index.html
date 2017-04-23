@@ -62,10 +62,14 @@
            }
            setTimeout(refresh, 60 * 1000);
          
-         // $(document.body).keydown(){
-
-         // }
-
+         $(document).keydown(  function(){
+          $("canvas").css("mix-blend-mode", "normal");
+         });
+         $(document).keyup(  function(){
+          $("canvas").css("mix-blend-mode", "lighten");
+         });
+        
+         
   </script>
 </body>
 </html>

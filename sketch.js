@@ -11,16 +11,17 @@ numOfBGC = 1,
 numOfLines = 15;
 var input;
 var analyzer, mic, fft;
+var evn5, env3;
 var vol = 0.5;
 var bgD = 0;
-var c = ['#FB5E97', '#9ACBA7', '#FADBC3', '#FB960A']; //'#4D2833',
+var c = ['#9ACBA7', '#FB5E97', '#FADBC3', '#FB960A','#4D2833']; //'#4D2833',
 var blows = 0;
 var sz = 1, stk = 1, spe = 1;
 var doesExplode = false;
 var bg = 0;
 var pw, ph;
 var interval, hue;
-var minvol = 0.2, suppressor, supInterval;
+var minvol = 0.18, suppressor, supInterval;
 var isLostCtrl;
 var img, imgTrans = 255;
 var vid, vidMove, vidStill;
@@ -28,7 +29,7 @@ var samePerson;
 var timePressed;
 var doesShowText = false ,textInterval;
 var tfade = .03;
-var opa;
+var opa, opa2, bgInterval;
 var changeBCTimer = 40;
 
 function preload() {
@@ -51,6 +52,7 @@ function reset(){
     sat = 255;
     tfade = random(.01, .05);
     opa = 0;
+    opa2 = 0;
   }
 }
 
@@ -92,6 +94,7 @@ function setup() {
   hue = 100;
   sat = 255;
   opa = 0;
+  opa2 = 0;
 
   // frameRate(25);
   suppressor = 1;
@@ -128,24 +131,25 @@ function draw() {
   vol = mic.getLevel();
   var env1 = fft.getEnergy(120);
   var env2 = fft.getEnergy(170);
-  var env3 = fft.getEnergy(230);
+  env3 = fft.getEnergy(230);
   var env4 = fft.getEnergy(690);
-  var env5 = fft.getEnergy(900);
-
+  env5 = fft.getEnergy(900);
+  volCtrl();
 
   if (keyIsDown(32)) {
 
     ///////////// hands ON starts /////////////
 
-    var stage1 = 7;
-    var stage2 = stage1 + 9;
-    var stage3 = stage2 + 21;
-    var stage4 = stage3 + 3;
-    var stage5 = stage4 + 30;
+    var stage1 = 6; //getting small
+    var pause = stage1 + 4;
+    var stage2 = pause + 6; //circles
+    var stage3 = stage2 + 21; //letter drop
+    var stage4 = stage3 + 3; //fade transition
+    var stage5 = stage4 + 35; //last poem
 
-        if (suppressor == 1) {
-          $("div.sign").addClass("active");
-        }
+    if (suppressor == 1) {
+      $("div.sign").addClass("active");
+    }
 
 // start to getget small
     if((new Date() - timePressed)/1000 > 8) {
@@ -162,35 +166,65 @@ function draw() {
       minvol = minvol / suppressor;
     }
 
+
+    //temp disable, trying to use css
     background(c[bg]);
 
+    //transation to text droping
     if (suppressor > stage3 - 2) {
-        background(255, opa);
+       background(255, opa);
         opa = lerp(opa, 255, .03);
     }
-    if (suppressor >=70) {
+    //finish poem, reset bg image
+    if (suppressor >= stage5) {
       vid = vidStill;
    } else if (suppressor >= stage4 && suppressor < stage5) {
-      if(env3 > 110){
+      if(volCtrl()){
         showText();
       }
     } else if (suppressor >= stage3 && suppressor < stage4) {
         tfade = .7;
     } else if (suppressor >= stage2 && suppressor < stage3) {
-      if(env3 > 110){
+      // clearInterval(bgInterval);
+      // background(c[bg]);
+
+      if(volCtrl()){
         initicalizeTextdrops();
       }
-    } else if (suppressor > stage1 + 2 && suppressor < stage2) {
-      if(env3 > 110){
+    } else if (suppressor >= pause && suppressor < stage2) {
         initializeBGCircle();
-        if(env4 > 230) {
-        bg = round(random(c.length-1));
+        if (opa2 >= 250) {
+          opa2 = 0;
         }
+background(0, opa2)
+        vid = vidStill;
+        
+        opa2 = lerp(opa2, 255, .1); 
+        if (opa2 > 249 ) {
+          opa2 = 249;
+          vidMove.loop();
+        vid = vidMove;
+        }
+        
+      // if(volCtrl()){
+        // if(env4 > 230) {
+          // bgInterval = setInterval(function(){
+          //       bg = round(random(c.length-1));
+          // }, random(500, 1500));
+        // }
+      // }
+    } else if (suppressor >= stage1 && suppressor < pause){
+      vidMove.stop();
+      vid = loadImage('img/black.jpg');
+      background(0, opa2);
+      opa2 = lerp(opa2, 255, .03);
+      if (opa2 > 254) {
+        opa2 = 255;
       }
     } else if (suppressor < stage1) {
 
     ///////////// begining stage 
-      if (vol > minvol && vol < 0.5 && env5 > 140) {
+      if (volCtrl()) {
         if (env1 > 120) {
           bg = round(random(c.length-1));
         }
@@ -228,7 +262,7 @@ function draw() {
     } else {
        reset();
     }
-    if (suppressor >=70) {
+    if (suppressor >= 75) {
         reset();
     }
     ///////////// hands off finsih /////////////
@@ -272,7 +306,7 @@ function suppress(){
 
 function keyReleased(){
       vid = vidStill;
-  vidMove.stop();
+    vidMove.stop();
     samePerson = new Date();
     interval = setInterval(changeBgC, changeBCTimer);
 }
@@ -294,14 +328,6 @@ function changeBgC(){
 }
 
 function goCircle() {
-  // for (var i = lines.length - 1; i >= 0; i--) {
-  //   lines[i].display();
-  //   lines[i].move();
-
-  //   if (lines[i].isFinished()) {
-  //     lines.splice(i, 1);
-  //   }
-  // }
 
   for (var i = triangles.length - 1; i >= 0; i--) {
     triangles[i].display();
@@ -362,4 +388,11 @@ function goCircle() {
 function blendImg(){
   var imgD = (windowWidth + windowHeight) / 2;
   blend(vid, 0, 0, 1080, 1080, (windowWidth - imgD) / 2, (windowHeight - imgD) / 2, imgD, imgD, LIGHTEST);
+}
+
+function volCtrl(){
+  if (vol > minvol && vol < 0.6 && env5 > 120) {
+    return true;
+  }
+  return false;
 }

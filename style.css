@@ -11,6 +11,7 @@
  canvas {
  	vertical-align: top;
     -webkit-clip-path: circle(34% at center);
+    		/*mix-blend-mode: lighten;*/
 } 
 
  #bubble {
@@ -20,7 +21,39 @@
 
     -webkit-clip-path: circle(34% at center);
     clip-path: circle(34% at center);
+    /*animation: grad 30s linear infinite;*/
+
  }
+
+ @keyframes grad {
+	    0% {
+	    	background-color: hsl(0, 100%, 50%);
+	    }
+		12.5% {
+	    	background-color: hsl(45, 100%, 50%);
+	    }
+	    20% {
+	    	background-color: hsl(60, 100%, 50%);
+	    }
+	    37.5% {
+	    	background-color: hsl(135, 100%, 50%);
+	    }
+	    50% {
+	    	background-color: hsl(180, 100%, 50%);
+	    }
+		62.5% {
+	    	background-color: hsl(225, 100%, 50%);
+	    }
+	    75% {
+	    	background-color: hsl(270, 100%, 50%);
+	    }
+		87.5% {
+	    	background-color: hsl(315, 100%, 50%);
+	    }
+	    100% {
+	    	background-color: hsl(360, 100%, 50%);
+	    }
+	}
 
 /* .circle-mask {
   clip-path: circle(34% at center);
