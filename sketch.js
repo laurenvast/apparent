@@ -29,8 +29,10 @@ var samePerson;
 var timePressed;
 var doesShowText = false ,textInterval;
 var tfade = .03;
-var opa, opa2, bgInterval;
+var opa, opa2;
 var changeBCTimer = 40;
+var textbg;
+var notSureIfDown;
 
 function preload() {
   font = loadFont("lib/Sue Ellen Francisco.ttf");
@@ -91,10 +93,12 @@ function initicalizeTextdrops(){
 
 function setup() {
   samePerson = new Date();
+  notSureIfDown = false;
   hue = 100;
   sat = 255;
   opa = 0;
   opa2 = 0;
+  textbg = round(random(c.length-2));
 
   // frameRate(25);
   suppressor = 1;
@@ -135,8 +139,17 @@ function draw() {
   var env4 = fft.getEnergy(690);
   env5 = fft.getEnergy(900);
   volCtrl();
+  //if(keyIsDown(32)) {
+  //  samePerson = new Date();
+ // }
+   if (!keyIsDown(32) && new Date() - samePerson > 1000 && notSureIfDown == true) {
+    keyReleased();
+   }
+   if (keyIsDown(32)) {
+    samePerson = new Date();
+   }
 
-  if (keyIsDown(32)) {
+  if (keyIsDown(32) || (notSureIfDown==true)) {
 
     ///////////// hands ON starts /////////////
 
@@ -187,6 +200,7 @@ function draw() {
     } else if (suppressor >= stage2 && suppressor < stage3) {
       // clearInterval(bgInterval);
       // background(c[bg]);
+          bg = textbg;
 
       if(volCtrl()){
         initicalizeTextdrops();
@@ -196,7 +210,7 @@ function draw() {
         if (opa2 >= 250) {
           opa2 = 0;
         }
-background(0, opa2)
+        background(0, opa2)
         vid = vidStill;
         
         opa2 = lerp(opa2, 255, .1); 
@@ -305,17 +319,30 @@ function suppress(){
 }
 
 function keyReleased(){
-      vid = vidStill;
-    vidMove.stop();
-    samePerson = new Date();
-    interval = setInterval(changeBgC, changeBCTimer);
+  if ((new Date() - samePerson) > 1000) {
+    console.log("here");
+     vid = vidStill;
+     vidMove.stop();
+     samePerson = new Date();
+     interval = setInterval(changeBgC, changeBCTimer);
+     notSureIfDown = false;
+  } else {
+    console.log("here2");
+    notSureIfDown = true;
+  }
 }
 
 function keyPressed(){
+  if (notSureIfDown == false) {
     vidMove.loop();
-   vid = vidMove;
+    vid = vidMove;
     clearInterval(interval);
     timePressed = new Date();
+  }
+  if (new Date() - samePerson > 1000){
+    notSureIfDown = false;
+       // samePerson = new Date();
+  }
 }
 
 function changeBgC(){
