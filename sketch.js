@@ -29,7 +29,7 @@ var samePerson;
 var timePressed;
 var doesShowText = false ,textInterval;
 var tfade = .03;
-var opa, opa2;
+var opa, opa2, opa3;
 var changeBCTimer = 40;
 var textbg;
 var notSureIfDown;
@@ -56,6 +56,7 @@ function reset(){
     tfade = random(.01, .05);
     opa = 0;
     opa2 = 0;
+    opa3 = 0;
   }
 }
 
@@ -99,6 +100,7 @@ function setup() {
   sat = 255;
   opa = 0;
   opa2 = 0;
+      opa3 = 0;
   textbg = round(random(c.length-2));
 
   // frameRate(25);
@@ -189,9 +191,13 @@ function draw() {
        background(255, opa);
         opa = lerp(opa, 255, .03);
     }
+
+   
     //finish poem, reset bg image
     if (suppressor >= stage5) {
-      vid = vidStill;
+            finsihed();
+    } else if (suppressor == stage5 - 1) {
+      vidMove.loop();
    } else if (suppressor >= stage4 && suppressor < stage5) {
       if(volCtrl()){
         showText();
@@ -285,7 +291,7 @@ function draw() {
 
   goCircle();
  
-  if (suppressor >= 40) {
+  if (suppressor >= 40 && suppressor < 75) {
   }else{
      blendImg();
   }
@@ -296,6 +302,15 @@ function showText() {
     doesShowText = true;
     poem();
   }  
+}
+
+function finsihed(){
+      background(0, opa3);
+      opa3 = lerp(opa3, 255, .01);
+      if (opa3 > 254) {
+        opa3 = 255;
+      }
+      vid = loadImage('img/black.jpg');
 }
 
 function poem(){
@@ -321,14 +336,12 @@ function suppress(){
 
 function keyReleased(){
   if ((new Date() - samePerson) > bufferTiming) {
-    console.log("here");
      vid = vidStill;
      vidMove.stop();
      samePerson = new Date();
      interval = setInterval(changeBgC, changeBCTimer);
      notSureIfDown = false;
   } else {
-    console.log("here2");
     notSureIfDown = true;
   }
 }
@@ -343,6 +356,10 @@ function keyPressed(){
   if (new Date() - samePerson > bufferTiming){
     notSureIfDown = false;
        // samePerson = new Date();
+  }
+//testing skip
+  if (keyCode === LEFT_ARROW) {
+    suppressor = 45;
   }
 }
 
