@@ -33,7 +33,7 @@ var opa, opa2, opa3;
 var changeBCTimer = 40;
 var textbg;
 var notSureIfDown;
-var bufferTiming = 500;
+var bufferTiming = 300;
 
 function preload() {
   font = loadFont("lib/Sue Ellen Francisco.ttf");
@@ -157,8 +157,8 @@ function draw() {
     ///////////// hands ON starts /////////////
 
     var stage1 = 6; //getting small
-    var pause = stage1 + 4;
-    var stage2 = pause + 6; //circles
+    var pause = stage1 + 5;
+    var stage2 = pause + 5; //circles
     var stage3 = stage2 + 21; //letter drop
     var stage4 = stage3 + 3; //fade transition
     var stage5 = stage4 + 35; //last poem
@@ -196,6 +196,7 @@ function draw() {
     //finish poem, reset bg image
     if (suppressor >= stage5) {
             finsihed();
+
     } else if (suppressor == stage5 - 1) {
       vidMove.loop();
    } else if (suppressor >= stage4 && suppressor < stage5) {
@@ -208,8 +209,11 @@ function draw() {
       // clearInterval(bgInterval);
       // background(c[bg]);
           bg = textbg;
-
+      if (suppressor == stage2+2) {
+        checkthere();
+      }
       if(volCtrl()){
+        $('div.check.active').addClass('gone');
         initicalizeTextdrops();
       }
     } else if (suppressor >= pause && suppressor < stage2) {
@@ -275,8 +279,7 @@ function draw() {
 
     $('div.sign.active.gone').removeClass('gone');
     $('div.sign.active').removeClass('active');
-
-
+    $('div.check.active.gone').removeClass('active gone');
 
     isHandOn = false;
     if ((new Date() - samePerson)/1000 < 4 && suppressor >= 1) {
@@ -295,6 +298,11 @@ function draw() {
   }else{
      blendImg();
   }
+}
+
+function checkthere(){
+    $('div.check').addClass('active');
+    console.log("check!");
 }
 
 function showText() {
@@ -359,7 +367,7 @@ function keyPressed(){
   }
 //testing skip
   if (keyCode === LEFT_ARROW) {
-    suppressor = 45;
+    suppressor = 15;
   }
 }
 
